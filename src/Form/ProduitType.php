@@ -25,7 +25,7 @@ class ProduitType extends AbstractType
             ->add('prix', NumberType::class, ['scale' => 2 ,'label' =>"Prix"])
             ->add('quota' , IntegerType::class, ['label' =>"Quota"])
             ->add('stock' , IntegerType::class, ['label' =>"Stock"])
-            ->add('estActif'  , CheckboxType::class, ['label' =>"Actif"])
+            ->add('estActif'  , CheckboxType::class, ['label' =>"Actif", 'required' => false])
             // ->add('dateCreation', null, [
             //     'widget' => 'single_text'
             // ])
