@@ -1,3 +1,16 @@
 body {
-    background-color: skyblue;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 20px;
+  padding: 20px;
 }
+
+h1 {
+  color: #333;
+}
+
+p {
+  font-size: 16px;
+  color: #555;
+}
+

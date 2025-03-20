@@ -1,0 +1,48 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Liste des Produits{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+{% endblock %}
+
+{% block body %}
+    <h1>Produits</h1>
+
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Référence</th>
+                <th>Conditionnement</th>
+                <th>Quant.</th>
+                <th>Emplacement</th>
+                <th>Prix</th>
+                <th>Quota</th>
+                <th>Stock</th>
+                <th>Actif</th>
+                <th>Création</th>
+                <th>MAJ</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produit in produits %}
+                <tr>
+                    <td>{{ produit.nom }}</td>
+                    <td>{{ produit.reference }}</td>
+                    <td>{{ produit.typeConditionnement }}</td>
+                    <td>{{ produit.quantite }}</td>
+                    <td>{{ produit.emplacement }}</td>
+                    <td>{{ produit.prix }}</td>
+                    <td>{{ produit.quota }}</td>
+                    <td>{{ produit.stock }}</td>
+                    <td>{{ produit.estActif ? 'OUI' : 'NON' }}</td>
+                    <td>{{ produit.dateCreation | date('d-m-Y') }}</td>
+                    <td>{{ produit.dateMaj | date('d-m-Y') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+<a href="{{ path('test7') }}" class="btn">Create</a>
+{% endblock %}
