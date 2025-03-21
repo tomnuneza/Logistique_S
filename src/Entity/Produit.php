@@ -5,8 +5,13 @@ namespace App\Entity;
 use App\Repository\ProduitRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
+#[UniqueEntity('reference', message: "La référence existe déjà !")]
+
 class Produit
 {
     #[ORM\Id]
@@ -15,27 +20,43 @@ class Produit
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[NotBlank(message: "nom obligatoire!")]
+    #[Assert\Length(max: 50, maxMessage: "Le nom doit contenir au plus 50 caractères !")]
     private ?string $nom = null;
 
     #[ORM\Column(length: 20)]
+    #[NotBlank(message: "La référence est obligatoire !")]
+    #[Assert\Length(max: 20, maxMessage: "La référence doit contenir au plus 20 caractères !")]
     private ?string $reference = null;
 
     #[ORM\Column(length: 50)]
+    #[NotBlank(message: "Le type de conditionnement est obligatoire !")]
+    #[Assert\Length(max: 30, maxMessage: "Le type de conditionnement doit contenir au plus 30 caractères !")]
     private ?string $typeConditionnement = null;
 
     #[ORM\Column]
+    #[NotBlank(message: "La quantité est obligatoire !")]
+    #[Assert\Positive(message: "La quantité doit être supérieure ou égale à 1 !")]
     private ?int $quantite = null;
 
     #[ORM\Column(length: 40)]
+    #[NotBlank(message: "L'emplacement est obligatoire !")]
+    #[Assert\Length(max: 30, maxMessage: "L'emplacement doit contenir au plus 30 caractères !")]
     private ?string $emplacement = null;
 
     #[ORM\Column]
+    #[NotBlank(message: "Le prix est obligatoire !")]
+    #[Assert\PositiveOrZero(message: "Le prix doit être positif ou nul !")]
     private ?float $prix = null;
 
     #[ORM\Column]
+    #[NotBlank(message: "Le quota est obligatoire !")]
+    #[Assert\PositiveOrZero(message: "Le quota doit être supérieur à 0 ou nul !")]
     private ?int $quota = null;
 
     #[ORM\Column]
+    #[NotBlank(message: "Le stock est obligatoire !")]
+    #[Assert\PositiveOrZero(message: "Le stock doit être supérieur à 0 ou nul !")]
     private ?int $stock = null;
 
     #[ORM\Column]

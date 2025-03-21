@@ -7,6 +7,7 @@ use App\Form\ProduitType;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -107,32 +108,32 @@ final class TestController extends AbstractController
         return new Response("<h1>Produit 1 supprimé !</h1>");
     }
 
-// route lister les produits
+    // route lister les produits
     #[Route('/test9', name: 'test9', methods: ['GET'])]
     public function test9(EntityManagerInterface $entityManager): Response
     {
-        $produits = $entityManager->getRepository(Produit::class)->findBy([], ['nom' => 'ASC']);
+        $produits = $entityManager->getRepository(Produit::class)->findBy([], ['dateCreation' => 'ASC']);
 
         return $this->render('test/test9.html.twig', ['produits' => $produits]);
     }
 
-    // Route pour afficher le formulaire des produits.
-#[Route('/test10', name: 'test10', methods: ['GET'])]
-public function test10(): Response
-{
-    $produit = new Produit();
-    $form = $this->createForm(ProduitType::class, $produit);
-    
-    return $this->render('test/test10.html.twig', ['form' => $form]);
-}
-// Route pour afficher le formulaire detailles des produits.
-#[Route('/test102', name: 'test102', methods: ['GET'])]
-public function test102(): Response
-{
-    $produit = new Produit();
-    $form = $this->createForm(ProduitType::class, $produit);
-    
-    return $this->render('test/test102.html.twig', ['form' => $form]);
-}
+    // Route pour afficher le formulaire de saisie et persister les produits.
+    #[Route('/test10{id}', name: 'test10', methods: ['GET', 'POST'] , requirements: ['id' => '[1-9][0-9]*'])]
+    public function test10(Request $request, EntityManagerInterface $entityManager, int $id = 0): Response
+    {
+        $produit = new Produit();
+        $form = $this->createForm(ProduitType::class, $produit);
+        $form->handleRequest($request);
 
+        if ($form->isSubmitted() && $form->isValid()) {
+            $produit->setDateCreation(new DateTime());
+            $produit->setDateMaj(new DateTime());
+
+            $entityManager->persist($produit);
+            $entityManager->flush();
+            return $this->redirectToRoute('test9');
+        }
+
+        return $this->render('test/test10.html.twig', ['form' => $form]);
+    }
 }

@@ -2,4 +2,22 @@
 
 {% block title %}test 10{% endblock %}
 
-{% block body %} {{form(form)}} {% endblock %}
+{% block body %}
+
+	{{form_start(form)}}
+	<div class="errors">{{form_errors(form)}}</div>
+	<div class="item">{{form_row(form.nom)}}</div>
+	<div class="item">{{ form_row(form.reference) }}</div>
+	<div class="item">{{ form_row(form.typeConditionnement) }}</div>
+	<div class="item">{{ form_row(form.quantite) }}</div>
+	<div class="item">{{ form_row(form.emplacement) }}</div>
+	<div class="item">{{ form_row(form.prix) }}</div>
+	<div class="item">{{ form_row(form.quota) }}</div>
+	<div class="item">{{ form_row(form.stock) }}</div>
+	<div class="item">{{ form_row(form.estActif) }}</div>
+
+
+	{{ form_end(form) }}
+  <span><a href="{{ path('test9') }}" class="btn">View Form</a></span>
+
+{% endblock %}
