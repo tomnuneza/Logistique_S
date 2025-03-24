@@ -7,6 +7,13 @@
     {
       "folderPath": "Logistique_S\\templates\\test\\",
       "color": "foldercolorizer.color_33cc00"
+    },
+    {
+      "folderPath": "Logistique_S\\src\\",
+      "color": "foldercolorizer.color_00ccff"
+    },
+    {
+      "folderPath": "Logistique_S\\src\\Repository\\"
     }
   ]
 }

@@ -14,6 +14,8 @@
         <thead>
             <tr>
                 <th>Nom</th>
+                <th>Fournisseur</th>
+                <th>Categorie</th>
                 <th>Référence</th>
                 <th>Conditionnement</th>
                 <th>Quant.</th>
@@ -30,16 +32,19 @@
             {% for produit in produits %}
                 <tr>
                     <td>{{ produit.nom }}</td>
+                    <td>{{ produit.fournisseur.nom }}</td>
+                    <td>{{ produit.categorie.nom }}</td>
                     <td>{{ produit.reference }}</td>
                     <td>{{ produit.typeConditionnement }}</td>
                     <td>{{ produit.quantite }}</td>
                     <td>{{ produit.emplacement }}</td>
-                    <td>{{ produit.prix }}</td>
+                    <td>{{ produit.prix}}</td>
                     <td>{{ produit.quota }}</td>
                     <td>{{ produit.stock }}</td>
                     <td>{{ produit.estActif ? 'OUI' : 'NON' }}</td>
                     <td>{{ produit.dateCreation | date('d-m-Y') }}</td>
                     <td>{{ produit.dateMaj | date('d-m-Y') }}</td>
+                    <td><img src="{{ vich_uploader_asset(produit, 'imageFile') }}" alt="{{ produit.imageName }}" height="100"></td>
                 </tr>
             {% endfor %}
         </tbody>

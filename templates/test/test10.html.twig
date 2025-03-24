@@ -6,6 +6,8 @@
 
 	{{form_start(form)}}
 	<div class="errors">{{form_errors(form)}}</div>
+		<div class="item">{{form_row(form.fournisseur)}}</div>
+	<div class="item">{{form_row(form.categorie)}}</div>
 	<div class="item">{{form_row(form.nom)}}</div>
 	<div class="item">{{ form_row(form.reference) }}</div>
 	<div class="item">{{ form_row(form.typeConditionnement) }}</div>

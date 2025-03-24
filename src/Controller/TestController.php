@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Categorie;
+use App\Entity\Fournisseur;
 use App\Entity\Produit;
 use App\Form\ProduitType;
 use DateTime;
@@ -118,22 +120,31 @@ final class TestController extends AbstractController
     }
 
     // Route pour afficher le formulaire de saisie et persister les produits.
-    #[Route('/test10{id}', name: 'test10', methods: ['GET', 'POST'] , requirements: ['id' => '[1-9][0-9]*'])]
+    #[Route('/test10/{id}', name: 'test10', methods: ['GET', 'POST'], requirements: ['id' => '[1-9][0-9]*'])]
     public function test10(Request $request, EntityManagerInterface $entityManager, int $id = 0): Response
     {
-        $produit = new Produit();
-        $form = $this->createForm(ProduitType::class, $produit);
+        $produit = $id ? $entityManager->getRepository(Produit::class)->find($id) : new Produit();
+        $fournisseurs = $entityManager->getRepository(Fournisseur::class)->findBy([], ['nom' => 'ASC']);
+        $categories = $entityManager->getRepository(Categorie::class)->findBy([], ['nom' => 'ASC']);
+        $form = $this->createForm(ProduitType::class, $produit, ['categories' => $categories, 'fournisseurs' => $fournisseurs]);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $produit->setDateCreation(new DateTime());
-            $produit->setDateMaj(new DateTime());
-
+            if (!$id)
+                $produit->setDateMaj(new DateTime());
             $entityManager->persist($produit);
             $entityManager->flush();
             return $this->redirectToRoute('test9');
         }
-
         return $this->render('test/test10.html.twig', ['form' => $form]);
+    }
+
+    // Route qui stocke une variable de session.
+    #[Route('/test11', name: 'test11', methods: ['GET'])]
+    public function test11(Request $request): Response
+    {
+        $session = $request->getSession();
+        $session->set('pi', 3.14);
+        return new Response("<h1>Session créée !</h1><h3>PI : {$session->get('pi', 0)}</h3>");
     }
 }
