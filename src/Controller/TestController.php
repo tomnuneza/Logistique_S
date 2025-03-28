@@ -8,7 +8,9 @@ use App\Entity\Produit;
 use App\Form\ProduitType;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Spipu\Html2Pdf\Html2Pdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -24,8 +26,8 @@ use Symfony\Component\Routing\Attribute\Route;
 // }
 final class TestController extends AbstractController
 {
-    #[Route('/test', name: 'test', methods: ['GET'])]
-    public function test(): Response
+    #[Route('/test1', name: 'test1', methods: ['GET'])]
+    public function test1(): Response
     {
         return new Response("<h1>HEY</h1>");
     }
@@ -146,5 +148,44 @@ final class TestController extends AbstractController
         $session = $request->getSession();
         $session->set('pi', 3.14);
         return new Response("<h1>Session créée !</h1><h3>PI : {$session->get('pi', 0)}</h3>");
+    }
+
+    // Route qui génère un PDF.
+    #[Route('/test12', name: 'test12', methods: ['GET'])]
+    public function test12(): Response
+    {
+        $produit = new Produit();
+        $produit->setNom('Bidule');
+        $produit->setReference('BID');
+        $produit->setTypeConditionnement('Sachet');
+        $produit->setQuantite(50);
+        $produit->setEmplacement('H123');
+        $produit->setPrix(12);
+        $produit->setQuota(10);
+        $produit->setStock(100);
+        $produit->setEstActif(true);
+        $produit->setDateCreation(new DateTime());
+        $produit->setDateMaj(new DateTime());
+
+        $html2pdf = new Html2Pdf();
+        $response = $this->render('test/test7.html.twig', ['produit' => $produit]);
+        $html2pdf->writeHTML($response->getContent());
+
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            'facture.pdf'
+        );
+
+        return new Response($html2pdf->output('', 'S'), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => $disposition
+        ]);
+    }
+
+    // Route qui bascule entre 2 types d'affichages.
+    #[Route('/test13/{display}', name: 'test13', methods: ['GET'])]
+    public function test13($display = 'TILES'): Response
+    {
+        return $this->render('test13.html.twig', ['display' => $display]);
     }
 }

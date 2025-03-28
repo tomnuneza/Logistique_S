@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\ProduitRepository;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -88,6 +90,17 @@ class Produit
 
     #[ORM\Column(nullable: true)]
     private ?int $imageSize = null;
+
+    /**
+     * @var Collection<int, LigneCommande>
+     */
+    #[ORM\OneToMany(targetEntity: LigneCommande::class, mappedBy: 'produit')]
+    private Collection $lignesCommandes;
+
+    public function __construct()
+    {
+        $this->lignesCommandes = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -284,5 +297,35 @@ class Produit
     public function setImageSize(?int $imageSize): void
     {
         $this->imageSize = $imageSize;
+    }
+
+    /**
+     * @return Collection<int, LigneCommande>
+     */
+    public function getLignesCommandes(): Collection
+    {
+        return $this->lignesCommandes;
+    }
+
+    public function addLignesCommande(LigneCommande $lignesCommande): static
+    {
+        if (!$this->lignesCommandes->contains($lignesCommande)) {
+            $this->lignesCommandes->add($lignesCommande);
+            $lignesCommande->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLignesCommande(LigneCommande $lignesCommande): static
+    {
+        if ($this->lignesCommandes->removeElement($lignesCommande)) {
+            // set the owning side to null (unless already changed)
+            if ($lignesCommande->getProduit() === $this) {
+                $lignesCommande->setProduit(null);
+            }
+        }
+
+        return $this;
     }
 }

@@ -1,0 +1,21 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Test 13
+{% endblock %}
+
+{% block body %}
+	<h1>Voici les produits :</h1>
+	<p>
+		<a href="/test13/TILES">Par tuiles</a>
+	</p>
+	<p>
+		<a href="/test13/LIST">En liste</a>
+	</p>
+
+	{% if display == 'TILES' %}
+		{% include('test/tiles.html.twig') %}
+	{% else %}
+		{% include('test/list.html.twig') %}
+	{% endif %}
+	<h3>Voilà !</h3>
+{% endblock %}
