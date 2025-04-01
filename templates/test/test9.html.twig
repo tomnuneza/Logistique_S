@@ -1,54 +1,113 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Liste des Produits{% endblock %}
+{% block title %}Liste des Produits
+{% endblock %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/app.css') }}">
 {% endblock %}
 
 {% block body %}
-    <h1>Produits</h1>
+	<h1>Produits</h1>
 
 
-    <table>
-        <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Fournisseur</th>
-                <th>Categorie</th>
-                <th>Référence</th>
-                <th>Conditionnement</th>
-                <th>Quant.</th>
-                <th>Emplacement</th>
-                <th>Prix</th>
-                <th>Quota</th>
-                <th>Stock</th>
-                <th>Actif</th>
-                <th>Création</th>
-                <th>MAJ</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for produit in produits %}
-                <tr>
-                    <td>{{ produit.nom }}</td>
-                    <td>{{ produit.fournisseur.nom }}</td>
-                    <td>{{ produit.categorie.nom }}</td>
-                    <td>{{ produit.reference }}</td>
-                    <td>{{ produit.typeConditionnement }}</td>
-                    <td>{{ produit.quantite }}</td>
-                    <td>{{ produit.emplacement }}</td>
-                    <td>{{ produit.prix}}</td>
-                    <td>{{ produit.quota }}</td>
-                    <td>{{ produit.stock }}</td>
-                    <td>{{ produit.estActif ? 'OUI' : 'NON' }}</td>
-                    <td>{{ produit.dateCreation | date('d-m-Y') }}</td>
-                    <td>{{ produit.dateMaj | date('d-m-Y') }}</td>
-                    
-                    <td><img src="{{ vich_uploader_asset(produit, 'imageFile') }}" alt="{{ produit.imageName }}" height="100"></td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-<a href="{{ path('test10') }}" class="btn">Create</a>
+	<table>
+		<thead>
+			<tr>
+				<th>Nom</th>
+				<th>Fournisseur</th>
+				<th>Categorie</th>
+				<th>Référence</th>
+				<th>Conditionnement</th>
+				<th>Quant.</th>
+				<th>Emplacement</th>
+				<th>Prix</th>
+				<th>Quota</th>
+				<th>Stock</th>-
+				<th>Actif</th>
+				<th>Création</th>
+				<th>MAJ</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for produit in produits %}
+				<tr>
+					<td>{{ produit.nom }}</td>
+					<td>{{ produit.fournisseur.nom }}</td>
+					<td>{{ produit.categorie.nom }}</td>
+					<td>{{ produit.reference }}</td>
+					<td>{{ produit.typeConditionnement }}</td>
+					<td>{{ produit.quantite }}</td>
+					<td>{{ produit.emplacement }}</td>
+					<td>{{ produit.prix}}</td>
+					<td>{{ produit.quota }}</td>
+					<td>{{ produit.stock }}</td>
+					<td>{{ produit.estActif ? 'OUI' : 'NON' }}</td>
+					<td>{{ produit.dateCreation | date('d-m-Y') }}</td>
+					<td>{{ produit.dateMaj | date('d-m-Y') }}</td>
+
+					<td><img src="{{ vich_uploader_asset(produit, 'imageFile') }}" alt="{{ produit.imageName }}" height="100"></td>
+					<td>
+						<form method="get" action="{{ path('commande_add', {id: produit.id}) }}">
+							<div style="display: flex; gap: 5px;">
+								<select name="quantite" class="form-select form-select-sm">
+									{% for i in 1..10 %}
+										<option value="{{ i }}">{{ i }}</option>
+									{% endfor %}
+								</select>
+								<button type="submit" class="btn btn-success btn-sm">Add</button>
+							</div>
+						</form>
+						<a href="{{ path('commande_add', {id: produit.id, quantite: 0}) }}" class="btn btn-danger btn-sm">Remove</a>
+						<a href="{{ path('test10', {id: produit.id}) }}" class="btn btn-warning btn-sm">Edit</a>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+
+	</table>
+
+	{% if commande and commande.lignes|length > 0 %}
+		<hr>
+		<h2>panier</h2>
+		<table>
+			<thead>
+				<tr>
+					<th>Produit</th>
+					<th>Quantité</th>
+					<th>Prix</th>
+					<th>Sous-total</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for ligne in commande.lignes %}
+					<tr>
+						<td>{{ ligne.produit.nom }}</td>
+						<td>{{ ligne.quantite }}</td>
+						<td>{{ ligne.prix }}
+							€</td>
+						<td>{{ (ligne.quantite * ligne.prix) }}
+							€</td>
+						<td>
+							<a href="{{ path('commande_remove', { id: ligne.produit.id}) }}" class="btn btn-danger btn-sm">Supprimer produit</a>
+							<a href="{{ path('commande_add', { id: ligne.produit.id, quantite: 0 }) }}" class="btn btn-danger btn-sm">Supprimer ALL</a>
+
+						</td>
+					</tr>	
+				{% endfor %}
+			</tbody>
+		</table>
+
+
+	{% endif %}
+
+	<a href="{{ path('test10') }}" class="btn">Create</a>
+
+	{% if commande and commande.lignes|length > 0 %}
+		<a href="{{ path('commande_checkout') }}" class="btn btn-primary">
+			Passer la commande (Checkout)
+		</a>
+	{% endif %}
+
 {% endblock %}

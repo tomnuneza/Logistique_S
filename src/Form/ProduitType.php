@@ -21,39 +21,38 @@ class ProduitType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-        ->add('fournisseur', EntityType::class, [
-            'class' => Fournisseur::class,
-            'choices' => $options['fournisseurs'],
-            'choice_label' => 'nom',
-            'label' => "Fournisseur"
-        ])
             ->add('categorie', EntityType::class, [
                 'class' => Categorie::class,
                 'choices' => $options['categories'],
                 'choice_label' => 'nom',
-                'label' => "Catégorie"
+                'label' => "Categorie"
+            ])
+            ->add('fournisseur', EntityType::class, [
+                'class' => Fournisseur::class,
+                'choices' => $options['fournisseurs'],
+                'choice_label' => 'nom',
+                'label' => "Fournisseur"
             ])
             ->add('nom', TextType::class, ['label' => "Nom"])
-            ->add('reference', TextType::class, ['label' => "Reference"])
+            ->add('reference', TextType::class, ['label' => "Référence"])
             ->add('typeConditionnement', TextType::class, ['label' => "Conditionnement"])
-            ->add('quantite', IntegerType::class, ['label' => "Quantity"])
-            ->add('emplacement', TextType::class, ['label' => "L'Emplacement"])
-            ->add('prix', MoneyType::class, ['divisor' => 100, 'currency' => false , 'label' => "Prix"])
+            ->add('quantite', IntegerType::class, ['label' => "Quantité"])
+            ->add('emplacement', TextType::class, ['label' => "Emplacement"])
+            ->add('prix', MoneyType::class, ['divisor' => 100, 'currency' => false, 'label' => "Prix"])
             ->add('quota', IntegerType::class, ['label' => "Quota"])
             ->add('stock', IntegerType::class, ['label' => "Stock"])
             ->add('estActif', CheckboxType::class, ['label' => "Actif", 'required' => false])
             ->add('imageFile', VichImageType::class, ['label' => "Image", 'required' => false])
-            ->add('submit', SubmitType::class, ['label' => "Valider"])
-
-        ;
+            ->add('submit', SubmitType::class, ['label'=> "Valider"])
+            ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Produit::class,
-            'fournisseurs' => null,
             'categories' => null,
+            'fournisseurs' => null,
         ]);
     }
 }

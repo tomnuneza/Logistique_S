@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Expédition{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('styles/test7.css') }}"
+{% endblock %}
+
+{% block body %}
+    <div>
+    <h1>Facture</h1>
+    <p>Acheteur : {{ commande.acheteur }}</p>
+    <p>Etat : {{ commande.etat.value }}</p>
+    <p>Expédition : {{ commande.dateExpedition | date('d-m-Y') }}</p>
+    <p>Numéro : {{ commande.numero }}</p>
+    {% for ligne in lignes %}
+    <p>Prix :{{ ligne.quantite }}  de  {{ ligne.produit.nom }} {{ ligne.prix | number_format }}</p>
+    {% endfor %}
+    <p>Total : {{ commande.Total }}</p>
+    </div>
+{% endblock %}
