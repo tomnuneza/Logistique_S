@@ -51,7 +51,7 @@ security:
         - { path: ^/test8/, roles: [ROLE_ADMIN, ROLE_LOGISTICIEN, ROLE_ACHETEUR]}
         - { path: ^/test2/, roles: ROLE_USER }
         - { path: ^/test9, roles: [ROLE_ADMIN, ROLE_LOGISTICIEN, ROLE_ACHETEUR] }
-        - { path: ^/test10, roles: [ROLE_ADMIN, ROLE_LOGISTICIEN, ROLE_ACHETEUR] }
+        - { path: ^/test10, roles: [ROLE_ADMIN, ROLE_LOGISTICIEN] }
         - { path: ^/test, roles: ROLE_ADMIN }
         - { path: ^/commande/add/, roles: [ROLE_ADMIN, ROLE_LOGISTICIEN, ROLE_ACHETEUR] }
         - { path: ^/commande/checkout$, roles: ROLE_ACHETEUR }

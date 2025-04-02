@@ -19,6 +19,57 @@ use Symfony\Component\Routing\Attribute\Route;
 final class CommandeController extends AbstractController
 {
 
+    #[Route('/panier', name: 'panier', methods: ['GET'])]
+public function panier(EntityManagerInterface $entityManager): Response
+{
+    $commande = $entityManager->getRepository(Commande::class)->findOneBy([
+        'etat' => EtatCommande::EN_COURS,
+        'acheteur' => $this->getUser(),
+    ]);
+
+    return $this->render('/commande/panier.html.twig', [
+        'commande' => $commande,
+    ]);
+}
+
+
+    #[Route('/commande/update/{id}', name: 'commande_update', methods: ['GET'])]
+public function update(Request $request, EntityManagerInterface $entityManager, int $id): Response
+{
+    $quantite = (int) $request->query->get('quantite', 1);
+
+    $produit = $entityManager->getRepository(Produit::class)->find($id);
+    $commande = $entityManager->getRepository(Commande::class)->findOneBy([
+        'etat' => EtatCommande::EN_COURS,
+        'acheteur' => $this->getUser(),
+    ]);
+
+    if (!$produit || !$commande) {
+        return $this->redirectToRoute('test9');
+    }
+
+    $ligne = $entityManager->getRepository(LigneCommande::class)->findOneBy([
+        'commande' => $commande,
+        'produit' => $produit,
+    ]);
+
+    if ($ligne) {
+        if ($quantite === 0) {
+            $entityManager->remove($ligne);
+        } else {
+            $ligne->setQuantite($quantite);
+            $entityManager->persist($ligne);
+        }
+
+        // Update total
+        $commande->setTotal((int) $entityManager->getRepository(Commande::class)->findTotal()['total']);
+        $entityManager->persist($commande);
+        $entityManager->flush();
+    }
+
+    return $this->redirectToRoute('panier');
+}
+
     #[Route('/commande/remove/{id}', name: 'commande_remove', methods: ['GET'], requirements: ['id' => '[1-9][0-9]*'])]
     public function remove(EntityManagerInterface $entityManager, int $id): Response
     {
@@ -47,7 +98,7 @@ final class CommandeController extends AbstractController
         $entityManager->persist($commande);
         $entityManager->flush();
 
-        return $this->redirectToRoute('test9'); // or return JsonResponse if using fetch
+        return $this->redirectToRoute('panier'); // or return JsonResponse if using fetch
     }
 
 

@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Panier{% endblock %}
+
+{% block body %}
+
+
+{% if commande is defined and commande and commande.lignes|length > 0 %}
+		<hr>
+		<h2>Panier</h2>
+		<table>
+			<thead>
+				<tr>
+					<th>Produit</th>
+					<th>Quantité</th>
+					<th>Prix</th>
+					<th>Sous-total</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for ligne in commande.lignes %}
+					<tr>
+						<td>{{ ligne.produit.nom }}</td>
+						<td>{{ ligne.quantite }}</td>
+						<td>{{ (ligne.prix / 100) | number_format(2, '.', ' ') }}
+							€</td>
+						<td>{{ (ligne.quantite * ligne.prix / 100) | number_format(2, '.', ' ') }}
+							€</td>
+						<td>
+							<a href="{{ path('commande_remove', { id: ligne.produit.id }) }}" class="btnSupprimer">-</a>
+							<form method="get" action="{{ path('commande_update', { id: ligne.produit.id }) }}">
+								<input type="number" name="quantite" min="0" value="{{ ligne.quantite }}">
+								<button type="submit" class="btn btn-info btn-sm">Update</button>
+							</form>
+
+							<a href="{{ path('commande_add', { id: ligne.produit.id, quantite: 0 }) }}" class="btnSupprimer">Supprimer</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<a href="{{ path('commande_checkout') }}" class="btnViews">
+			Passer la commande</a>
+	{% endif %}
+  <a href="{{ path('test9') }}" class="btnViews"> all products </a>
+
+{% endblock %}

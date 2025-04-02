@@ -8,8 +8,9 @@
 {% endblock %}
 
 {% block body %}
-	<h1>Produits</h1>
 
+
+	<h1>Produits</h1>
 
 	<table>
 		<thead>
@@ -23,13 +24,16 @@
 				<th>Emplacement</th>
 				<th>Prix</th>
 				<th>Quota</th>
-				<th>Stock</th>-
+				<th>Stock</th>
 				<th>Actif</th>
 				<th>Création</th>
 				<th>MAJ</th>
+				<th></th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
+			{# {{ dump(app.user.roles) }} #}
 			{% for produit in produits %}
 				<tr>
 					<td>{{ produit.nom }}</td>
@@ -39,75 +43,37 @@
 					<td>{{ produit.typeConditionnement }}</td>
 					<td>{{ produit.quantite }}</td>
 					<td>{{ produit.emplacement }}</td>
-					<td>{{ produit.prix}}</td>
+					<td>{{ (produit.prix / 100) | number_format(2, '.', ' ') }}
+						€</td>
 					<td>{{ produit.quota }}</td>
 					<td>{{ produit.stock }}</td>
 					<td>{{ produit.estActif ? 'OUI' : 'NON' }}</td>
 					<td>{{ produit.dateCreation | date('d-m-Y') }}</td>
 					<td>{{ produit.dateMaj | date('d-m-Y') }}</td>
-
-					<td><img src="{{ vich_uploader_asset(produit, 'imageFile') }}" alt="{{ produit.imageName }}" height="100"></td>
 					<td>
-						<form method="get" action="{{ path('commande_add', {id: produit.id}) }}">
-							<div style="display: flex; gap: 5px;">
-								<select name="quantite" class="form-select form-select-sm">
-									{% for i in 1..10 %}
-										<option value="{{ i }}">{{ i }}</option>
-									{% endfor %}
-								</select>
-								<button type="submit" class="btn btn-success btn-sm">Add</button>
-							</div>
+						<img src="{{ vich_uploader_asset(produit, 'imageFile') }}" alt="{{ produit.imageName }}" height="100">
+					</td>
+					<td>
+						<form method="get" action="{{ path('commande_add', { id: produit.id }) }}">
+							<input type="number" name="quantite" min="1" value="1">
+							<button type="submit" class="btnSuccess">Ajouter</button>
 						</form>
-						<a href="{{ path('commande_add', {id: produit.id, quantite: 0}) }}" class="btn btn-danger btn-sm">Remove</a>
-						<a href="{{ path('test10', {id: produit.id}) }}" class="btn btn-warning btn-sm">Edit</a>
+
+						{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_LOGISTICIEN') %}
+							<a href="{{ path('test10', { id: produit.id }) }}" class="btnViews">Modifier</a>
+							<a href="{{ path('commande_add', { id: produit.id, quantite: 0 }) }}" class="btnSupprimer">Supprimer tout</a>
+						{% endif %}
 					</td>
 				</tr>
 			{% endfor %}
 		</tbody>
-
 	</table>
-
-	{% if commande and commande.lignes|length > 0 %}
-		<hr>
-		<h2>panier</h2>
-		<table>
-			<thead>
-				<tr>
-					<th>Produit</th>
-					<th>Quantité</th>
-					<th>Prix</th>
-					<th>Sous-total</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for ligne in commande.lignes %}
-					<tr>
-						<td>{{ ligne.produit.nom }}</td>
-						<td>{{ ligne.quantite }}</td>
-						<td>{{ ligne.prix }}
-							€</td>
-						<td>{{ (ligne.quantite * ligne.prix) }}
-							€</td>
-						<td>
-							<a href="{{ path('commande_remove', { id: ligne.produit.id}) }}" class="btn btn-danger btn-sm">Supprimer produit</a>
-							<a href="{{ path('commande_add', { id: ligne.produit.id, quantite: 0 }) }}" class="btn btn-danger btn-sm">Supprimer ALL</a>
-
-						</td>
-					</tr>	
-				{% endfor %}
-			</tbody>
-		</table>
-
-
+	{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_LOGISTICIEN') %}
+		<a href="{{ path('test10') }}" class="btnViews">
+			Nouveau produit</a>
 	{% endif %}
+{% if commande is defined and commande and commande.lignes|length > 0 %}
+    <a href="{{ path('panier') }}" class="btnPanier"> Voir le panier</a>
+{% endif %}
 
-	<a href="{{ path('test10') }}" class="btn">Create</a>
-
-	{% if commande and commande.lignes|length > 0 %}
-		<a href="{{ path('commande_checkout') }}" class="btn btn-primary">
-			Passer la commande (Checkout)
-		</a>
-	{% endif %}
-
-{% endblock %}
+	{% endblock %}
