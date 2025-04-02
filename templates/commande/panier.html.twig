@@ -32,7 +32,7 @@
 							<a href="{{ path('commande_remove', { id: ligne.produit.id }) }}" class="btnSupprimer">-</a>
 							<form method="get" action="{{ path('commande_update', { id: ligne.produit.id }) }}">
 								<input type="number" name="quantite" min="0" value="{{ ligne.quantite }}">
-								<button type="submit" class="btn btn-info btn-sm">Update</button>
+								<button type="submit" class="btnSuccess">Update</button>
 							</form>
 
 							<a href="{{ path('commande_add', { id: ligne.produit.id, quantite: 0 }) }}" class="btnSupprimer">Supprimer</a>
